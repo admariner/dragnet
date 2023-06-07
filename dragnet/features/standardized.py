@@ -16,10 +16,7 @@ class StandardizedFeature(BaseEstimator, TransformerMixin):
 
     def __init__(self, feature, scaler=None):
         self.feature = feature
-        if scaler is None:
-            self.scaler = StandardScaler()
-        else:
-            self.scaler = scaler
+        self.scaler = StandardScaler() if scaler is None else scaler
 
     def fit(self, blocks, y=None):
         """

@@ -108,8 +108,7 @@ def str_dict_cast(dict_, include_keys=True, include_vals=True, **kwargs):
     """
     new_keys = str_list_cast(dict_.keys(), **kwargs) if include_keys else dict_.keys()
     new_vals = str_list_cast(dict_.values(), **kwargs) if include_vals else dict_.values()
-    new_dict = dict(zip_(new_keys, new_vals))
-    return new_dict
+    return dict(zip_(new_keys, new_vals))
 
 
 def bytes_dict_cast(dict_, include_keys=True, include_vals=True, **kwargs):
@@ -131,8 +130,7 @@ def bytes_dict_cast(dict_, include_keys=True, include_vals=True, **kwargs):
     """
     new_keys = bytes_list_cast(dict_.keys(), **kwargs) if include_keys else dict_.keys()
     new_vals = bytes_list_cast(dict_.values(), **kwargs) if include_vals else dict_.values()
-    new_dict = dict(zip_(new_keys, new_vals))
-    return new_dict
+    return dict(zip_(new_keys, new_vals))
 
 
 def str_block_cast(block,
@@ -278,9 +276,6 @@ if '0.15.2' <= sklearn_version <= '0.17.1':
     else:
         model_path = 'py3_sklearn_0.15.2_0.17.1'
 elif sklearn_version >= '0.18.0':
-    if PY2:
-        model_path = 'py2_sklearn_0.18.0'
-    else:
-        model_path = 'py3_sklearn_0.18.0'
+    model_path = 'py2_sklearn_0.18.0' if PY2 else 'py3_sklearn_0.18.0'
 else:
-    raise Exception('incompatible scikit-learn version: "{}"'.format(sklearn_version))
+    raise Exception(f'incompatible scikit-learn version: "{sklearn_version}"')

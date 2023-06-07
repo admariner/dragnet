@@ -34,11 +34,11 @@ import lxml
 from numpy import get_include
 
 def find_libxml2_include():
-    include_dirs = []
-    for d in ['/usr/include/libxml2', '/usr/local/include/libxml2']:
-        if os.path.exists(os.path.join(d, 'libxml/tree.h')):
-            include_dirs.append(d)
-    return include_dirs
+    return [
+        d
+        for d in ['/usr/include/libxml2', '/usr/local/include/libxml2']
+        if os.path.exists(os.path.join(d, 'libxml/tree.h'))
+    ]
 
 # set min MacOS version, if necessary
 if sys.platform == 'darwin':

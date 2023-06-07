@@ -59,8 +59,12 @@ def extract_all_gold_standard_data(data_dir, nprocesses=1,
         gs_blocks_filenames = get_filenames(
             gs_blocks_dir, full_path=False, match_regex=re.escape(GOLD_STANDARD_BLOCKS_EXT))
         gs_blocks_fileroots = {
-            re.search(r'(.+)' + re.escape(GOLD_STANDARD_BLOCKS_EXT), gs_blocks_filename).group(1)
-            for gs_blocks_filename in gs_blocks_filenames}
+            re.search(
+                f'(.+){re.escape(GOLD_STANDARD_BLOCKS_EXT)}',
+                gs_blocks_filename,
+            )[1]
+            for gs_blocks_filename in gs_blocks_filenames
+        }
     else:
         gs_blocks_fileroots = set()
 
@@ -70,11 +74,11 @@ def extract_all_gold_standard_data(data_dir, nprocesses=1,
     gs_filenames = get_filenames(
         gs_dir, full_path=False, match_regex=re.escape(GOLD_STANDARD_EXT))
     for i, gs_filename in enumerate(gs_filenames):
-        gs_fileroot = re.search(r'(.+)' + re.escape(GOLD_STANDARD_EXT), gs_filename).group(1)
+        gs_fileroot = re.search(f'(.+){re.escape(GOLD_STANDARD_EXT)}', gs_filename)[1]
         if gs_fileroot in gs_blocks_fileroots:
             continue
         if i % 100 == 0:
-            print('Extracting gold standard blocks for file "{}"'.format(gs_filename))
+            print(f'Extracting gold standard blocks for file "{gs_filename}"')
         if use_pool:
             pool.apply_async(extract_gold_standard_blocks, (data_dir, gs_fileroot), kwargs)
         else:
@@ -213,10 +217,10 @@ def get_filenames(dirname, full_path=False, match_regex=None, extension=None):
         str: next matching filename
     """
     if not os.path.exists(dirname):
-        raise OSError('directory "{}" does not exist'.format(dirname))
+        raise OSError(f'directory "{dirname}" does not exist')
     match_regex = re.compile(match_regex) if match_regex else None
     for filename in sorted(os.listdir(dirname)):
-        if extension and not os.path.splitext(filename)[-1] == extension:
+        if extension and os.path.splitext(filename)[-1] != extension:
             continue
         if match_regex and not match_regex.search(filename):
             continue
@@ -247,7 +251,7 @@ def read_html_file(data_dir, fileroot, encoding=None):
             with io.open(fname, mode='rt', encoding=encoding) as f:
                 raw_html = f.read()
             break
-        except (UnicodeDecodeError, UnicodeError):
+        except UnicodeError:
             raw_html = None
 
     return ftfy.fix_encoding(raw_html).strip()
@@ -276,7 +280,7 @@ def read_gold_standard_file(data_dir, fileroot, encoding=None, cetr=False):
             with io.open(fname, mode='rt', encoding=encoding) as f:
                 gold_standard = f.read()
             break
-        except (UnicodeDecodeError, UnicodeError):
+        except UnicodeError:
             gold_standard = None
 
     if not gold_standard:
@@ -395,8 +399,11 @@ def prepare_all_data(data_dir, block_pct_tokens_thresh=0.1):
     gs_blocks_filenames = get_filenames(
         gs_blocks_dir, full_path=False, match_regex=re.escape(GOLD_STANDARD_BLOCKS_EXT))
     gs_blocks_fileroots = (
-        re.search(r'(.+)' + re.escape(GOLD_STANDARD_BLOCKS_EXT), gs_blocks_filename).group(1)
-        for gs_blocks_filename in gs_blocks_filenames)
+        re.search(
+            f'(.+){re.escape(GOLD_STANDARD_BLOCKS_EXT)}', gs_blocks_filename
+        )[1]
+        for gs_blocks_filename in gs_blocks_filenames
+    )
 
     return [prepare_data(data_dir, fileroot, block_pct_tokens_thresh)
             for fileroot in gs_blocks_fileroots]
