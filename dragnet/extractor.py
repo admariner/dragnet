@@ -49,7 +49,7 @@ class Extractor(BaseEstimator, ClassifierMixin):
         elif isinstance(model, ClassifierMixin):
             self.model = model
         else:
-            raise TypeError('invalid `model` type: "{}"'.format(type(model)))
+            raise TypeError(f'invalid `model` type: "{type(model)}"')
         if isinstance(to_extract, string_):
             self.to_extract = (to_extract,)
         else:
@@ -220,8 +220,5 @@ class Extractor(BaseEstimator, ClassifierMixin):
                 preds = self.model.predict_proba(features) > self.prob_threshold
                 preds = preds[:, self._positive_idx].astype(int)
 
-        if return_blocks:
-            return preds, blocks
-        else:
-            return preds
+        return (preds, blocks) if return_blocks else preds
 

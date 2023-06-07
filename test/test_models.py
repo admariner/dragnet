@@ -27,7 +27,7 @@ def test_models(html):
     for i, model in enumerate(models):
         gold_standard = actual_content[i]
         passed = False
-        for i in range(10):
+        for _ in range(10):
             content = model(html)
             _, _, f1 = evaluation_metrics(
                 simple_tokenizer(gold_standard), simple_tokenizer(content))
@@ -42,7 +42,7 @@ def test_content_and_content_comments_extractor(html):
     content_comments = extract_comments(html)
     passed_content = False
     passed_content_comments = False
-    for i in range(10):
+    for _ in range(10):
         # actual_content, actual_content_comments = \
         #     extract_content_and_comments(html)
         actual_content = extract_content(html)
@@ -66,7 +66,7 @@ def test_content_and_content_comments_extractor_blocks(html):
 
     passed_content = False
     passed_content_comments = False
-    for i in range(5):
+    for _ in range(5):
         # actual_content, actual_content_comments = \
         #     content_and_content_comments_extractor.analyze(
         #         html, blocks=True)

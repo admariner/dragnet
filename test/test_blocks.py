@@ -70,7 +70,7 @@ class TestTextSubtree(object):
         tree = etree.fromstring(s, etree.HTMLParser(recover=True, encoding="utf-8"))
         text_list = blocks.text_from_subtree(tree)
         text_str = " ".join([ele.strip() for ele in text_list if ele.strip() != ""])
-        assert text_str == ""
+        assert not text_str
 
 
 def check_tagcount(expected, predicted):

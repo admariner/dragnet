@@ -224,14 +224,13 @@ def _set_up_output_dir_and_fname_prefix(output_dir, extractor):
 
 def _report_model_performance(output_dir, fname_prefix, train_eval, test_eval):
     if output_dir is not None:
-        output_fname = os.path.join(output_dir, fname_prefix + '_block_errors.txt')
+        output_fname = os.path.join(output_dir, f'{fname_prefix}_block_errors.txt')
         logging.info('writing evaluation metrics to file: %s', output_fname)
         with io.open(output_fname, mode='w') as f:
             f.write(u'Training errors for final model (block level):\n')
             f.write(str_cast(pprint.pformat(train_eval)))
             f.write(u'\nTest errors for final model (block level):\n')
             f.write(str_cast(pprint.pformat(test_eval)))
-    # or just print it out
     else:
         print('Training errors for final model (block level):\n')
         pprint.pprint(train_eval)
@@ -241,6 +240,6 @@ def _report_model_performance(output_dir, fname_prefix, train_eval, test_eval):
 
 def _write_model_to_disk(output_dir, fname_prefix, extractor):
     if output_dir is not None:
-        output_fname = os.path.join(output_dir, fname_prefix + '_model.pkl.gz')
+        output_fname = os.path.join(output_dir, f'{fname_prefix}_model.pkl.gz')
         logging.info('writing model to file: %s', output_fname)
         joblib.dump(extractor, output_fname, compress=3)

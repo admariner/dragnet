@@ -19,7 +19,7 @@ def fileroots():
 def datadir(fileroots):
     datadir = tempfile.mkdtemp()
     for froot in fileroots:
-        fname = os.path.join(datadir, "{}.html.corrected.txt".format(froot))
+        fname = os.path.join(datadir, f"{froot}.html.corrected.txt")
         with io.open(fname, mode="wt") as f:
             f.write(u".")
     yield datadir
@@ -31,33 +31,26 @@ class TestGetFilenames(object):
 
     def test_get_filenames(self, fileroots, datadir):
         filenames = list(data_processing.get_filenames(datadir))
-        assert (
-            filenames ==
-            ["{}.html.corrected.txt".format(froot) for froot in fileroots]
-        )
+        assert filenames == [f"{froot}.html.corrected.txt" for froot in fileroots]
 
     def test_get_filenames_full_path(self, fileroots, datadir):
         filenames = list(data_processing.get_filenames(datadir, full_path=True))
-        assert (
-            filenames ==
-            [os.path.join(datadir, "{}.html.corrected.txt".format(froot))
-             for froot in fileroots]
-        )
+        assert filenames == [
+            os.path.join(datadir, f"{froot}.html.corrected.txt")
+            for froot in fileroots
+        ]
 
     def test_get_filenames_match_regex(self, datadir):
         filenames = list(data_processing.get_filenames(datadir, match_regex='f1'))
         assert filenames == ['f1.html.corrected.txt']
         filenames = list(data_processing.get_filenames(datadir, match_regex='foo'))
-        assert filenames == []
+        assert not filenames
 
     def test_get_filenames_extension(self, fileroots, datadir):
         filenames = list(data_processing.get_filenames(datadir, extension='.txt'))
-        assert (
-            filenames ==
-            ['{}.html.corrected.txt'.format(froot) for froot in fileroots]
-        )
+        assert filenames == [f'{froot}.html.corrected.txt' for froot in fileroots]
         filenames = list(data_processing.get_filenames(datadir, extension='.foo'))
-        assert filenames == []
+        assert not filenames
 
 
 class TestReadGoldStandard(object):
@@ -82,7 +75,7 @@ class TestReadGoldStandard(object):
 
 
 def make_filepath(s):
-    return os.path.join(FIXTURES, "block_corrected", "{}.block_corrected.txt".format(s))
+    return os.path.join(FIXTURES, "block_corrected", f"{s}.block_corrected.txt")
 
 
 class TestExtractGoldStandard(object):
@@ -91,7 +84,7 @@ class TestExtractGoldStandard(object):
         fileroots = ["page_comments", "page_no_comments"]
         for fileroot in fileroots:
             actual_filepath = make_filepath(fileroot)
-            expected_filepath = make_filepath(fileroot + "_expected")
+            expected_filepath = make_filepath(f"{fileroot}_expected")
             data_processing.extract_gold_standard_blocks(FIXTURES, fileroot)
             with io.open(actual_filepath, mode="rt") as f:
                 actual_blocks = f.read()
@@ -102,6 +95,6 @@ class TestExtractGoldStandard(object):
 
     def test_extract_blank_label(self):
         blank_label = data_processing.read_gold_standard_blocks_file(FIXTURES, "blank_label")
-        assert len(list(blank_label)) == 0
+        assert not list(blank_label)
         blank_data = data_processing.prepare_data(FIXTURES, "blank_label")
         assert len(blank_data[0]) > 0

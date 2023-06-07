@@ -18,4 +18,4 @@ def get_feature(name):
     elif name == 'clustered_weninger':
         return ClusteredWeningerFeatures()
     else:
-        raise ValueError('invalid feature name: "{}"'.format(name))
+        raise ValueError(f'invalid feature name: "{name}"')

@@ -71,11 +71,11 @@ def evaluation_metrics(predicted, actual, bow=True):
     Returns:
         precision, recall, F1, Levenshtein distance
     """
+    true_positive = 0
     if bow:
         p = set(predicted)
         a = set(actual)
 
-        true_positive = 0
         for token in p:
             if token in a:
                 true_positive += 1
@@ -87,7 +87,6 @@ def evaluation_metrics(predicted, actual, bow=True):
         for token in actual:
             act[token] += 1
 
-        true_positive = 0
         for token in predicted:
             if act[token] > 0:
                 true_positive += 1
